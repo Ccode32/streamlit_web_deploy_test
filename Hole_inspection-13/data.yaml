@@ -1,0 +1,12 @@
+nc: 4
+names: ['Hole', 'Hole2', 'Hole3', 'Hole4']
+roboflow:
+  license: CC BY 4.0
+  project: hole_inspection
+  url: https://universe.roboflow.com/elice-hbahd/hole_inspection/dataset/13
+  version: 13
+  workspace: elice-hbahd
+test: Users/hyucksamkwon/project/streamlit_web_deploy_test/Hole_inspection-13/test/images
+train: Users/hyucksamkwon/project/streamlit_web_deploy_test/Hole_inspection-13/train/images
+val: Users/hyucksamkwon/project/streamlit_web_deploy_test/Hole_inspection-13/validimages
+
