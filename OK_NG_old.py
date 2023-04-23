@@ -22,6 +22,17 @@ instructions = """
         """
 st.write(instructions)
 
+file = st.file_uploader('Upload An Image')
+if file:  # if user uploaded file
+        img = Image.open(file)
+        img.save('/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/')
+
+        st.title("Here is the image you've selected")
+        resized_image = img.resize((819, 600))
+        st.image(resized_image)
+
+
+
 def plot_bboxes(image, boxes, labels=[], colors=[], score=True, conf=None):
   #Define COCO Labels
   if labels == []:
@@ -81,56 +92,43 @@ def box_label(image, box, label='', color=(128, 128, 128), txt_color=(255, 255, 
 
 import os
 
-# # 이미지 파일 확장자
-# extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.gif']
+# 이미지 파일 확장자
+extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.gif']
 
-# # 이미지 파일 개수 초기화
-# image_count = 0
+# 이미지 파일 개수 초기화
+image_count = 0
 
-# # 폴더 경로 설정
-# folder_path = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image'
+# 폴더 경로 설정
+folder_path = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image'
 
 # 폴더 내 파일 목록 얻기
-# file_list = os.listdir(folder_path)
-# file_names = []
-# # 파일 목록 순회
-# for file_name in file_list:
-#     # 파일의 확장자 추출
-#     ext = os.path.splitext(file_name)[-1].lower()
+file_list = os.listdir(folder_path)
+file_names = []
+# 파일 목록 순회
+for file_name in file_list:
+    # 파일의 확장자 추출
+    ext = os.path.splitext(file_name)[-1].lower()
     
-#     # 파일이 이미지 파일이면 개수 증가
-#     if ext in extensions:
-#         image_count += 1
-#         file_names.append(file_name)
+    # 파일이 이미지 파일이면 개수 증가
+    if ext in extensions:
+        image_count += 1
+        file_names.append(file_name)
 
-file = st.file_uploader('Upload An Image')
-
-if file:  # if user uploaded file
-    img = Image.open(file)
-    # img.save('/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/')
-
-    st.title("Here is the image you've selected")
-    resized_image = img.resize((819, 600))
-    st.image(resized_image)
-
-
-
-    # file_path = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/' + file_names[i]
-    # test_img = Image.open(file_path)
-    # save_img_path1 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/1_' + str(i) + '.jpg'
-    # test_img.save(save_img_path1)
-    # img = Image.open(save_img_path1)
-    # img_resize = img.resize((819, 600))
+for i in range(image_count):
+    file_path = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/' + file_names[i]
+    test_img = Image.open(file_path)
+    save_img_path1 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/1_' + str(i) + '.jpg'
+    test_img.save(save_img_path1)
+    img = Image.open(save_img_path1)
+    img_resize = img.resize((819, 600))
     # 4096 × 3000 
-    # save_img_path2 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/2_' + str(i) + '.jpg'
-    # img_resize.save(save_img_path2)
-    # image_path = save_img_path2
+    save_img_path2 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/2_' + str(i) + '.jpg'
+    img_resize.save(save_img_path2)
+    image_path = save_img_path2
 
-    # image = cv2.imread(image_path)
+    image = cv2.imread(image_path)
 
     #회전 추가 
-    image = resized_image 
-
     rows, cols = image.shape[:2]
     res=[]
     for k in range(9):
@@ -165,10 +163,8 @@ if file:  # if user uploaded file
             Distance = ((B[0][0]-B[1][0])**2 + (B[0][1]-B[0][1])**2)**1/2
             res.append(Distance)
     print(res)
-    i=0
     if max(res) <= 2.5:
         print('OK')
-        i+=1
         save_img_path3 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/3_' + str(i)+'OK' + '.jpg'
 
     else:
