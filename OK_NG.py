@@ -143,9 +143,12 @@ if file:  # if user uploaded file
         plot_bboxes(dst, results[0].boxes.data, score=False, conf=0.5)
         # save_img_path3 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/3_' + str(i) + '.jpg'
 
-        save_img_path3 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/4_' + str(k) + '.jpg'
+        st.title("deter image")
+        resized_image = dst.resize((82, 60))
+        st.image(resized_image)
+        # save_img_path3 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/4_' + str(k) + '.jpg'
 
-        cv2.imwrite(save_img_path3,dst)
+        # cv2.imwrite(save_img_path3,dst)
         # cv2.imwrite(save_img_path3,image)
         A = []
         for j in range(len(results[0].boxes.data)):
@@ -168,11 +171,13 @@ if file:  # if user uploaded file
     i=0
     if max(res) <= 2.5:
         print('OK')
-        i+=1
-        save_img_path3 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/3_' + str(i)+'OK' + '.jpg'
+        st.title("OK")
+        # i+=1
+        # save_img_path3 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/3_' + str(i)+'OK' + '.jpg'
 
     else:
         print('NG')
-        save_img_path3 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/3_' + str(i)+'NG' + '.jpg'
+        st.title("NG")
+        # save_img_path3 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/3_' + str(i)+'NG' + '.jpg'
     
-    cv2.imwrite(save_img_path3,dst)
+    # cv2.imwrite(save_img_path3,dst)
