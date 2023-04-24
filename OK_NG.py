@@ -15,7 +15,7 @@ model = YOLO('best.pt')
 import requests
 from io import BytesIO
 
-st.title("Hole inspection")
+st.title("Hole inspection \U0001f978")
 
 instructions = """
         홀 도포 이미지를 활용하여 불량과 양품을 판단
@@ -103,7 +103,7 @@ import os
 #         image_count += 1
 #         file_names.append(file_name)
 
-file = st.file_uploader('Upload An Image')
+file = st.file_uploader('Upload An Image ')
 
 if file:  # if user uploaded file
     img = Image.open(file)
@@ -112,8 +112,6 @@ if file:  # if user uploaded file
     st.title("Here is the image you've selected")
     resized_image = img.resize((819, 600))
     st.image(resized_image)
-
-
 
     # file_path = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/' + file_names[i]
     # test_img = Image.open(file_path)
@@ -128,11 +126,16 @@ if file:  # if user uploaded file
 
     # image = cv2.imread(image_path)
 
-    #회전 추가 
-    image = resized_image 
+    #회전 추가
+    resized_image.save("/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/my_image.jpg")
+    st.success("Image saved to local directory!")
+
+    image = cv2.imread("/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/my_image.jpg") 
 
     rows, cols = image.shape[:2]
     res=[]
+    flag = True
+    NG_List = []
     for k in range(9):
         M = cv2.getRotationMatrix2D((cols/2, rows/2), 10*k, 1)
         dst = cv2.warpAffine(image, M, (cols, rows))
@@ -143,12 +146,15 @@ if file:  # if user uploaded file
         plot_bboxes(dst, results[0].boxes.data, score=False, conf=0.5)
         # save_img_path3 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/3_' + str(i) + '.jpg'
 
-        st.title("deter image")
-        resized_image = dst.resize((82, 60))
-        st.image(resized_image)
-        # save_img_path3 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/4_' + str(k) + '.jpg'
-
-        # cv2.imwrite(save_img_path3,dst)
+        # st.title("deter image")
+        # resized_image = dst.resize((82, 60))
+        
+        save_img_path3 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/' + str(k) + '.jpg'
+        new_width = 800
+        ratio = new_width / dst.shape[1]
+        new_height = int(dst.shape[0] * ratio)
+        resized_img = cv2.resize(dst, (new_width, new_height), interpolation=cv2.INTER_AREA)
+        # print(dst)
         # cv2.imwrite(save_img_path3,image)
         A = []
         for j in range(len(results[0].boxes.data)):
@@ -156,7 +162,7 @@ if file:  # if user uploaded file
             a = results[0].boxes.data[j]
             if a[5]==1 or a[5]==2:
                 A.append([a[0],a[1],a[2],a[3]])
-        print(A)
+        # print(A)
 
         if len(A)!=2:
             print('detect_error')
@@ -167,17 +173,38 @@ if file:  # if user uploaded file
             # print(B)
             Distance = ((B[0][0]-B[1][0])**2 + (B[0][1]-B[0][1])**2)**1/2
             res.append(Distance)
+        color1 = [255,0,0]
+        color2 = [0,0,255]
+        if Distance > 5.2:
+           flag = False
+          #  temp = cv2.copyMakeBorder(resized_img, 10, 10, 10, 10, cv2.BORDER_CONSTANT, color1)
+           NG_List.append((k+1)*10)
+           stance = str((k+1)*10) + '도' + 'NG'
+           st.title(stance)
+           cv2.imwrite(save_img_path3,resized_img)
+           st.image(resized_img)  
+        else:
+           stance = str((k+1)*10) + '도' + 'OK'
+           st.title(stance)
+          #  temp = cv2.copyMakeBorder(resized_img, 10, 10, 10, 10, cv2.BORDER_CONSTANT, color2)
+           cv2.imwrite(save_img_path3,resized_img)
+           st.image(resized_img)
+        
+
     print(res)
-    i=0
-    if max(res) <= 2.5:
+    # i=0
+    if flag:
         print('OK')
-        st.title("OK")
+        st.title('90도 검사 결과 :green[OK] :sunglasses:')
         # i+=1
         # save_img_path3 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/3_' + str(i)+'OK' + '.jpg'
 
     else:
         print('NG')
-        st.title("NG")
+        st.title('{}도 검사 결과 :red[NG] :sob:' .format(NG_List))
         # save_img_path3 = '/Users/hyucksamkwon/project/streamlit_web_deploy_test/deter_image/result/3_' + str(i)+'NG' + '.jpg'
     
     # cv2.imwrite(save_img_path3,dst)
+
+
+
